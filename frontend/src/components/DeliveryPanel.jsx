@@ -10,7 +10,7 @@ export default function DeliveryPanel() {
 
   useEffect(() => {
     // 🔥 IMPORTANT: use laptop IP, not localhost
-    socketRef.current = io("http://192.168.1.175:5000");
+    socketRef.current = io("https://live-tracking-bapo.onrender.com");
 
     if (!navigator.geolocation) {
       setError("Geolocation not supported");
