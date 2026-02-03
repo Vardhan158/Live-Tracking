@@ -14,7 +14,7 @@ export default function App() {
   const [typingUser, setTypingUser] = useState("");
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:5000");
+    socketRef.current = io("https://live-tracking-bapo.onrender.com");
 
     socketRef.current.on("connect", () => {
       console.log("Connected:", socketRef.current.id);
