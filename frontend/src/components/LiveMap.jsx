@@ -57,7 +57,6 @@ export default function LiveMap() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* This makes map follow the rider */}
         <RecenterMap position={position} />
 
         <Marker position={position} />

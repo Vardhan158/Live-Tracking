@@ -9,44 +9,55 @@ app.use(cors());
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
+  cors: { origin: "*" },
 });
 
 io.on("connection", (socket) => {
   console.log("🟢 User connected:", socket.id);
 
-  // 🔔 Send notification to all users
-  socket.on("sendNotification", (data) => {
-    io.emit("newNotification", data);
-  });
+  // User joins
+  socket.on("join", (username) => {
+    socket.username = username;
+    console.log(`${username} joined`);
 
-  // 📦 Live order status tracking
-  socket.on("orderStatusUpdate", (data) => {
-    io.emit("orderStatusUpdate", data);
-
-    io.emit("newNotification", {
-      message: `Order is now ${data.status}`,
-      time: new Date().toLocaleTimeString(),
+    io.emit("message", {
+      user: "System",
+      text: `${username} joined the chat`,
     });
   });
 
-  // 🚴 Live delivery GPS tracking
-  socket.on("deliveryLocationUpdate", (data) => {
-    console.log("📡 Delivery GPS:", data.location);
-    io.emit("deliveryLocationUpdate", data);
+  // Receive and broadcast message
+  socket.on("sendMessage", (text) => {
+    console.log(`💬 ${socket.username}: ${text}`);
+
+    io.emit("message", {
+      user: socket.username,
+      text,
+    });
   });
 
+  // Typing indicator
+  socket.on("typing", () => {
+    socket.broadcast.emit("typing", socket.username);
+  });
+
+  socket.on("stopTyping", () => {
+    socket.broadcast.emit("stopTyping");
+  });
+
+  // Disconnect
   socket.on("disconnect", () => {
-    console.log("🔴 User disconnected:", socket.id);
+    console.log(`🔴 ${socket.username} disconnected`);
+
+    if (socket.username) {
+      io.emit("message", {
+        user: "System",
+        text: `${socket.username} left the chat`,
+      });
+    }
   });
 });
 
-// ✅ Render-compatible port
-const PORT = process.env.PORT || 5000;
-
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+server.listen(5000, () => {
+  console.log("🚀 Chat server running on port 5000");
 });
