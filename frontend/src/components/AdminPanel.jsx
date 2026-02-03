@@ -13,7 +13,7 @@ export default function AdminPanel() {
   const [currentStatus, setCurrentStatus] = useState("Preparing");
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:5000");
+    socketRef.current = io("https://live-tracking-bapo.onrender.com");
 
     return () => socketRef.current.disconnect();
   }, []);

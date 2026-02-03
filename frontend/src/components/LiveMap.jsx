@@ -35,7 +35,7 @@ export default function LiveMap() {
   });
 
   useEffect(() => {
-    socketRef.current = io("http://192.168.1.175:5000");
+    socketRef.current = io("https://live-tracking-bapo.onrender.com");
 
     socketRef.current.on("deliveryLocationUpdate", (data) => {
       console.log("📍 New location:", data.location);
